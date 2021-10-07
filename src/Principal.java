@@ -55,7 +55,7 @@ public class Principal extends PApplet {
 		particulas = new ArrayList<Particula>();
 		mover = true;
 
-		initServer();
+		iniciarServidor();
 
 	}
 
@@ -90,7 +90,7 @@ public class Principal extends PApplet {
 
 	}
 
-	public void initServer() {
+	public void iniciarServidor() {
 
 		new Thread(() -> {
 
@@ -192,7 +192,7 @@ public class Principal extends PApplet {
 		}
 	}
 
-	public void mostrarNombre() {
+	public void mostrarNombre() { 
 
 		for (int i = 0; i < particulas.size(); i++) {
 			if (dist(mouseX, mouseY, particulas.get(i).getX(), particulas.get(i).getY()) < 25) {
@@ -211,6 +211,7 @@ public class Principal extends PApplet {
 		for (int i = 0; i < particulas.size(); i++) {
 			if (dist(mouseX, mouseY, particulas.get(i).getX(), particulas.get(i).getY()) < 25) {
 				mov = 0;
+
 				particulas.get(i).setX(particulas.get(i).getX() + mov);
 				particulas.get(i).setY(particulas.get(i).getY() + mov);
 			}
