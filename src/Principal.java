@@ -196,7 +196,7 @@ public class Principal extends PApplet {
 
 	public void tocarParticula() { 
 		for (int i = 0; i < particulas.size(); i++) {
-			if (dist(mouseX, mouseY, particulas.get(i).getX(), particulas.get(i).getY()) < 25) {
+			if (dist(mouseX, mouseY, particulas.get(i).getX(), particulas.get(i).getY()) < 50) {
 				fill(particulas.get(i).getR(), particulas.get(i).getG(), particulas.get(i).getB());
 				stroke(3);
 				fill(250);
