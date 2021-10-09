@@ -27,7 +27,6 @@ public class Principal extends PApplet {
 	BufferedReader reader;
 	BufferedWriter writer;
 
-	InetAddress ipLocal;
 
 	// private ArrayList<PVector> particulas;
 	private ArrayList<Particula> particulas;
@@ -66,23 +65,25 @@ public class Principal extends PApplet {
 		background(254, 249, 231);
 
 		for (int i = 0; i < particulas.size(); i++) {
-
+			noStroke();
 			fill(particulas.get(i).getR(), particulas.get(i).getG(), particulas.get(i).getB());
 			ellipse(xf, yf, 20, 20);
-
+			
 			xf = particulas.get(i).getX() + mov;
 			yf = particulas.get(i).getY() + mov;
 
-			mostrarNombre();
+	
+			tocarParticula();
 
 			if (mover == true) {
-				movimientoParticulas();
+			movimientoParticulas();
 			} else {
-				detenerParticulas();
+				mover= false;
+				tocarParticula();
 			}
-
+			
 			if (borrar == true) {
-				System.out.println("aja si borremos");
+				System.out.println("bueno, y si borramos todo :D");
 				particulas.clear();
 			}
 
@@ -95,13 +96,11 @@ public class Principal extends PApplet {
 		new Thread(() -> {
 
 			try {
-				ipLocal = InetAddress.getLocalHost();
-				System.out.println("Starting port on ip " + ipLocal.getHostAddress());
-
-				ServerSocket server = new ServerSocket(7000);
-				System.out.println("Awaiting connection...");
+				
+				ServerSocket server = new ServerSocket(5000);
+				System.out.println("Esperando  cliente "+ server);
 				socket = server.accept();
-				System.out.println("Client connected succesfully");
+				System.out.println("El cliente se conectó");
 
 				InputStream is = socket.getInputStream();
 				InputStreamReader isr = new InputStreamReader(is);
@@ -112,31 +111,30 @@ public class Principal extends PApplet {
 				writer = new BufferedWriter(osw);
 
 				while (true) {
-					System.out.println("Awaiting message...");
+					System.out.println("Esperando mensaje del cliente...");
 					String line = reader.readLine();
 					System.out.println("Recibido" + line);
 
 					Gson gson = new Gson();
 
 					Particula particula = gson.fromJson(line, Particula.class);
-
+					
 					for (int i = 0; i < particula.getCantidad(); i++) {
 
-						x = particula.getX();
-						y = particula.getY();
+						int x = particula.getX();
+						int y = particula.getY();
 
-						r = particula.getR();
-						g = particula.getG();
-						b = particula.getB();
+						int r = particula.getR();
+						int g = particula.getG();
+						int b = particula.getB();
 
-						nombre = particula.getNombre();
+						String nombre = particula.getNombre();
 
-						cantidad = particula.getCantidad();
+						int  cantidad = particula.getCantidad();
 						borrar = particula.getBorrar();
-						crear = particula.getCrear();
+						Boolean crear = particula.getCrear();
 
-						System.out.println(
-								x + "," + y + " ," + nombre + " ," + cantidad + " (" + r + " ," + g + ", " + b + ") ");
+						System.out.println(x + "," + y + " ," + nombre + " ," + cantidad + " (" + r + " ," + g + ", " + b + ") ");
 
 						particulas.add(new Particula(x, y, nombre, cantidad, r, g, b, borrar, crear));
 
@@ -155,6 +153,8 @@ public class Principal extends PApplet {
 		for (int i = 0; i < particulas.size(); i++) {
 
 			mov = (int) random(0, 5);
+			
+		
 
 			if (mov == 1) {
 
@@ -191,31 +191,31 @@ public class Principal extends PApplet {
 			yf = 1;
 		}
 	}
+	
 
-	public void mostrarNombre() { 
 
+	public void tocarParticula() { 
 		for (int i = 0; i < particulas.size(); i++) {
 			if (dist(mouseX, mouseY, particulas.get(i).getX(), particulas.get(i).getY()) < 25) {
-				fill(r, g, b);
+				fill(particulas.get(i).getR(), particulas.get(i).getG(), particulas.get(i).getB());
+				stroke(3);
+				fill(250);
+				rect(mouseX-10,mouseY-15,40,20);
+				fill(particulas.get(i).getR(), particulas.get(i).getG(), particulas.get(i).getB());
 				text(particulas.get(i).getNombre(), mouseX, mouseY);
+				
 				mover = false;
-
-			} else {
-				mover = true;
-			}
-		}
-	}
-
-	public void detenerParticulas() {
-
-		for (int i = 0; i < particulas.size(); i++) {
-			if (dist(mouseX, mouseY, particulas.get(i).getX(), particulas.get(i).getY()) < 25) {
 				mov = 0;
 
 				particulas.get(i).setX(particulas.get(i).getX() + mov);
 				particulas.get(i).setY(particulas.get(i).getY() + mov);
+
+			} else {
+				
+				mover = true;
 			}
 		}
+		
 	}
 
 }
